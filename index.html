@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SS1 Digital Technologies – 2nd Term Exam 2026 | Sunnah Private School</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Merriweather:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green:   #1a7a4a;
+    --green2:  #23a066;
+    --white:   #ffffff;
+    --offwhite:#f5f9f6;
+    --gray:    #6b7a72;
+    --light:   #e2f0e8;
+    --border:  #c3dece;
+    --red:     #c0392b;
+    --gold:    #e6a817;
+    --shadow:  0 4px 24px rgba(26,122,74,0.10);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--offwhite);
+    color: #1a2e22;
+    min-height: 100vh;
+  }
+
+  /* ── SCREENS ─────────────────────────────── */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* ── START SCREEN ────────────────────────── */
+  #startScreen {
+    min-height: 100vh;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: linear-gradient(160deg, #e8f5ee 0%, #d0eedd 50%, #e8f5ee 100%);
+  }
+  #startScreen.active { display: flex; }
+
+  .logo-strip {
+    width: 64px; height: 8px;
+    background: var(--green2);
+    border-radius: 4px;
+    margin-bottom: 20px;
+  }
+
+  .start-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 40px 36px;
+    max-width: 480px;
+    width: 100%;
+    box-shadow: var(--shadow), 0 0 0 1px var(--border);
+    text-align: center;
+  }
+
+  .school-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--light);
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    padding: 6px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--green);
+    margin-bottom: 20px;
+    letter-spacing: 0.5px;
+  }
+
+  .start-card h1 {
+    font-family: 'Merriweather', serif;
+    font-size: 22px;
+    color: var(--green);
+    line-height: 1.35;
+    margin-bottom: 6px;
+  }
+
+  .start-card .sub {
+    font-size: 14px;
+    color: var(--gray);
+    margin-bottom: 28px;
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .info-box {
+    background: var(--offwhite);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 10px;
+    text-align: center;
+  }
+  .info-box .val { font-size: 22px; font-weight: 900; color: var(--green); }
+  .info-box .lbl { font-size: 11px; color: var(--gray); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+
+  .form-group { text-align: left; margin-bottom: 16px; }
+  .form-group label { display: block; font-size: 13px; font-weight: 700; color: var(--green); margin-bottom: 6px; }
+  .form-group input, .form-group select {
+    width: 100%; padding: 12px 14px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px; font-weight: 600;
+    color: #1a2e22;
+    background: var(--white);
+    outline: none;
+    transition: border-color .2s;
+  }
+  .form-group input:focus, .form-group select:focus { border-color: var(--green2); }
+
+  .btn-start {
+    width: 100%; padding: 15px;
+    background: var(--green);
+    color: var(--white);
+    border: none; border-radius: 12px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 16px; font-weight: 800;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background .2s, transform .1s;
+  }
+  .btn-start:hover { background: var(--green2); }
+  .btn-start:active { transform: scale(.98); }
+
+  .instructions {
+    margin-top: 20px;
+    background: #fff8e6;
+    border: 1px solid #f0d080;
+    border-radius: 10px;
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 13px;
+    color: #6b5a10;
+    line-height: 1.6;
+  }
+
+  /* ── EXAM SCREEN ─────────────────────────── */
+  #examScreen { min-height: 100vh; }
+  #examScreen.active { display: block; }
+
+  .exam-header {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--green);
+    color: var(--white);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  }
+
+  .exam-header .left { font-size: 13px; font-weight: 700; opacity: .9; }
+  .exam-header .left span { font-size: 15px; font-weight: 900; opacity: 1; }
+
+  .progress-wrap { flex: 1; max-width: 220px; }
+  .progress-bar-bg { background: rgba(255,255,255,0.25); border-radius: 6px; height: 8px; }
+  .progress-bar-fill { background: #7fffc0; border-radius: 6px; height: 8px; transition: width .3s; }
+  .progress-label { font-size: 11px; font-weight: 700; opacity: .85; margin-top: 3px; text-align: right; }
+
+  .timer-box {
+    background: rgba(255,255,255,0.15);
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 10px;
+    padding: 6px 14px;
+    font-size: 20px; font-weight: 900;
+    letter-spacing: 1px;
+    min-width: 80px;
+    text-align: center;
+  }
+  .timer-box.warning { background: rgba(230,168,23,0.3); border-color: var(--gold); color: var(--gold); }
+  .timer-box.danger  { background: rgba(192,57,43,0.3);  border-color: #e74c3c; color: #ff6b6b; animation: pulse .5s infinite alternate; }
+
+  @keyframes pulse { from { opacity: 1; } to { opacity: .6; } }
+
+  .exam-body { padding: 20px 16px 100px; max-width: 700px; margin: 0 auto; }
+
+  .section-label {
+    display: inline-block;
+    background: var(--light);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 12px; font-weight: 800;
+    color: var(--green);
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+    margin-top: 28px;
+  }
+
+  .question-card {
+    background: var(--white);
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+    transition: border-color .2s;
+  }
+  .question-card.answered { border-color: var(--green2); }
+
+  .q-num {
+    font-size: 11px; font-weight: 800;
+    color: var(--green2);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+  .q-text {
+    font-size: 15px; font-weight: 700;
+    line-height: 1.5;
+    margin-bottom: 14px;
+    color: #1a2e22;
+  }
+
+  .options { display: grid; gap: 8px; }
+
+  .option-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px; font-weight: 600;
+    transition: all .15s;
+    background: var(--offwhite);
+  }
+  .option-label:hover { border-color: var(--green2); background: var(--light); }
+  .option-label input[type=radio] { display: none; }
+  .option-label.selected { border-color: var(--green); background: var(--light); color: var(--green); }
+
+  .opt-letter {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 900;
+    color: var(--green);
+    flex-shrink: 0;
+    transition: background .15s;
+  }
+  .option-label.selected .opt-letter { background: var(--green); color: white; }
+
+  /* ── STICKY SUBMIT ───────────────────────── */
+  .sticky-footer {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: var(--white);
+    border-top: 2px solid var(--border);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+    z-index: 99;
+  }
+
+  .answered-count { font-size: 13px; font-weight: 700; color: var(--gray); }
+  .answered-count span { color: var(--green); font-size: 16px; font-weight: 900; }
+
+  .btn-submit {
+    padding: 12px 28px;
+    background: var(--green);
+    color: white;
+    border: none; border-radius: 10px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px; font-weight: 800;
+    cursor: pointer;
+    transition: background .2s, transform .1s;
+  }
+  .btn-submit:hover { background: var(--green2); }
+  .btn-submit:active { transform: scale(.97); }
+  .btn-submit:disabled { background: #aaa; cursor: not-allowed; }
+
+  /* ── RESULT SCREEN ───────────────────────── */
+  #resultScreen {
+    min-height: 100vh;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 24px 16px 60px;
+    background: linear-gradient(160deg, #e8f5ee 0%, #d0eedd 100%);
+  }
+  #resultScreen.active { display: flex; }
+
+  .result-card {
+    background: var(--white);
+    border-radius: 24px;
+    max-width: 520px;
+    width: 100%;
+    box-shadow: var(--shadow), 0 0 0 1px var(--border);
+    overflow: hidden;
+    margin-top: 16px;
+  }
+
+  .result-top {
+    background: var(--green);
+    color: white;
+    padding: 32px 28px;
+    text-align: center;
+  }
+
+  .result-emoji { font-size: 56px; margin-bottom: 8px; }
+  .result-name { font-size: 20px; font-weight: 800; margin-bottom: 4px; }
+  .result-subject { font-size: 13px; opacity: .8; }
+
+  .score-ring {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    border: 6px solid rgba(255,255,255,0.4);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    margin: 20px auto 8px;
+  }
+  .score-ring .score-num { font-size: 42px; font-weight: 900; line-height: 1; }
+  .score-ring .score-den { font-size: 14px; font-weight: 700; opacity: .8; }
+
+  .grade-badge {
+    display: inline-block;
+    padding: 6px 20px;
+    border-radius: 30px;
+    font-size: 18px; font-weight: 900;
+    letter-spacing: 1px;
+    margin-top: 8px;
+  }
+
+  .result-body { padding: 28px; }
+
+  .stat-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+  .stat-box { text-align: center; padding: 14px 8px; background: var(--offwhite); border-radius: 12px; border: 1px solid var(--border); }
+  .stat-box .s-val { font-size: 22px; font-weight: 900; }
+  .stat-box .s-lbl { font-size: 11px; font-weight: 700; color: var(--gray); text-transform: uppercase; letter-spacing: .5px; }
+
+  .perf-bar { margin-bottom: 6px; }
+  .perf-bar-label { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; margin-bottom: 4px; }
+  .perf-bar-bg { background: var(--light); border-radius: 6px; height: 10px; }
+  .perf-bar-fill { border-radius: 6px; height: 10px; transition: width 1s ease; }
+
+  .btn-retry {
+    width: 100%; padding: 14px;
+    background: var(--green);
+    color: white;
+    border: none; border-radius: 12px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px; font-weight: 800;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background .2s;
+  }
+  .btn-retry:hover { background: var(--green2); }
+
+  .review-section { margin-top: 28px; }
+  .review-title { font-size: 14px; font-weight: 800; color: var(--green); margin-bottom: 12px; border-bottom: 2px solid var(--light); padding-bottom: 8px; }
+
+  .review-item {
+    padding: 12px 14px; margin-bottom: 8px;
+    border-radius: 10px; border: 2px solid;
+    font-size: 13px; line-height: 1.5;
+  }
+  .review-item.correct { border-color: #b2dfdb; background: #f0faf8; }
+  .review-item.wrong   { border-color: #ffcdd2; background: #fff5f5; }
+  .review-item .ri-q   { font-weight: 700; margin-bottom: 4px; }
+  .review-item .ri-a   { font-size: 12px; }
+  .ri-your  { color: var(--red); }
+  .ri-right { color: var(--green); }
+
+  @media (max-width: 480px) {
+    .start-card { padding: 28px 20px; }
+    .info-grid { grid-template-columns: 1fr 1fr; }
+    .stat-row { grid-template-columns: 1fr 1fr 1fr; }
+    .exam-header { padding: 10px 12px; }
+    .timer-box { font-size: 17px; padding: 5px 10px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ START SCREEN ══════════════════════════════════════ -->
+<div id="startScreen" class="screen active">
+  <div class="logo-strip"></div>
+  <div class="start-card">
+    <div class="school-badge">🎓 Sunnah Private School · Second Term · 2026</div>
+    <h1>Digital Technologies Examination</h1>
+    <p class="sub">Read the instructions below, enter your details, and begin.</p>
+
+    <div class="info-grid">
+      <div class="info-box"><div class="val">50</div><div class="lbl">Questions</div></div>
+      <div class="info-box"><div class="val">100</div><div class="lbl">Total Marks</div></div>
+      <div class="info-box"><div class="val">45</div><div class="lbl">Minutes</div></div>
+      <div class="info-box"><div class="val">2</div><div class="lbl">Marks Each</div></div>
+    </div>
+
+    <div class="form-group">
+      <label>Full Name</label>
+      <input type="text" id="studentName" placeholder="e.g. Amara Okonkwo" autocomplete="name">
+    </div>
+    <div class="form-group">
+      <label>Class / Arm</label>
+      <select id="studentClass">
+        <option value="">-- Select your class --</option>
+        <option>SS1A</option>
+      </select>
+    </div>
+
+    <button class="btn-start" onclick="startExam()">Start Examination →</button>
+
+    <div class="instructions">
+      <strong>Instructions:</strong><br>
+      • Choose the most correct answer (A, B, C, or D) for each question.<br>
+      • Each correct answer carries <strong>2 marks</strong>.<br>
+      • The timer starts immediately. You have <strong>45 minutes</strong>.<br>
+      • You may go back and change answers before submitting.<br>
+      • Click <strong>Submit Exam</strong> when done or the exam auto-submits when time runs out.
+    </div>
+  </div>
+</div>
+
+<!-- ══ EXAM SCREEN ══════════════════════════════════════ -->
+<div id="examScreen" class="screen">
+  <div class="exam-header">
+    <div class="left">📝 <span id="headerName">Student</span></div>
+    <div class="progress-wrap">
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
+      <div class="progress-label" id="progressLabel">0 / 50</div>
+    </div>
+    <div class="timer-box" id="timerBox">45:00</div>
+  </div>
+
+  <div class="exam-body" id="examBody"></div>
+
+  <div class="sticky-footer">
+    <div class="answered-count">Answered: <span id="answeredCount">0</span> / 50</div>
+    <button class="btn-submit" onclick="confirmSubmit()">Submit Exam ✓</button>
+  </div>
+</div>
+
+<!-- ══ RESULT SCREEN ══════════════════════════════════════ -->
+<div id="resultScreen" class="screen">
+  <div class="result-card">
+    <div class="result-top">
+      <div class="result-emoji" id="resultEmoji">🎉</div>
+      <div class="result-name" id="resultName">Student</div>
+      <div class="result-subject">SS1 Digital Technologies · Second Term 2026 · Sunnah Private School</div>
+      <div class="score-ring">
+        <div class="score-num" id="scoreNum">0</div>
+        <div class="score-den">out of 100</div>
+      </div>
+      <div class="grade-badge" id="gradeBadge">—</div>
+    </div>
+
+    <div class="result-body">
+      <div class="stat-row">
+        <div class="stat-box"><div class="s-val" id="statCorrect" style="color:#1a7a4a">0</div><div class="s-lbl">Correct</div></div>
+        <div class="stat-box"><div class="s-val" id="statWrong"   style="color:#c0392b">0</div><div class="s-lbl">Wrong</div></div>
+        <div class="stat-box"><div class="s-val" id="statPct"     style="color:#e6a817">0%</div><div class="s-lbl">Score %</div></div>
+      </div>
+
+      <div id="sectionBars"></div>
+
+      <button class="btn-retry" onclick="retryExam()">🔄 Retake Examination</button>
+
+      <div class="review-section">
+        <div class="review-title">📋 Answer Review (Wrong Answers Only)</div>
+        <div id="reviewList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── QUESTION DATA ──────────────────────────────────────────────────────────
+const QUESTIONS = [
+  // COMPUTER NETWORKS
+  {s:"Computer Networks", q:"A computer network is best defined as ___.", opts:["A single computer with many programs","Two or more computers connected to share resources","A computer connected to a printer","A group of mobile phones"], ans:1},
+  {s:"Computer Networks", q:"Which type of network covers a small area such as a school or office?", opts:["WAN","MAN","LAN","PAN"], ans:2},
+  {s:"Computer Networks", q:"The Internet is an example of which type of network?", opts:["LAN","MAN","WAN","PAN"], ans:2},
+  {s:"Computer Networks", q:"Which device directs data packets from one network to another?", opts:["Switch","Hub","Router","Modem"], ans:2},
+  {s:"Computer Networks", q:"A switch is used to ___.", opts:["Connect a network to the internet","Convert digital signals to analogue","Connect devices within the same network","Direct packets between different networks"], ans:2},
+  {s:"Computer Networks", q:"Which network component allows a computer to connect to a network?", opts:["Router","NIC","Hub","Modem"], ans:1},
+  {s:"Computer Networks", q:"In a ___ topology, all devices are connected to a central switch.", opts:["Bus","Ring","Mesh","Star"], ans:3},
+  {s:"Computer Networks", q:"Which topology requires the most cables because every device connects to every other?", opts:["Star","Bus","Mesh","Ring"], ans:2},
+  {s:"Computer Networks", q:"Which of the following is an advantage of computer networks?", opts:["High setup cost","Virus can spread easily","Easy sharing of files and resources","Requires technical staff"], ans:2},
+  {s:"Computer Networks", q:"TCP/IP is best described as ___.", opts:["A type of computer virus","A set of rules governing data communication on the internet","A storage device","A web browser"], ans:1},
+
+  // INTERNET TECHNOLOGIES
+  {s:"Internet Technologies", q:"The World Wide Web (WWW) is ___.", opts:["The same thing as the Internet","A service that runs on top of the Internet","A type of search engine","A computer network"], ans:1},
+  {s:"Internet Technologies", q:"Which of the following is a web browser?", opts:["Google","Bing","Mozilla Firefox","Yahoo"], ans:2},
+  {s:"Internet Technologies", q:"A search engine is used to ___.", opts:["Send emails","Store files online","Find information on the internet","Connect to a network"], ans:2},
+  {s:"Internet Technologies", q:"Which of the following is NOT a search engine?", opts:["Google","DuckDuckGo","Microsoft Edge","Bing"], ans:2},
+  {s:"Internet Technologies", q:"DNS stands for ___.", opts:["Digital Network System","Domain Name System","Data Network Service","Dynamic Name Server"], ans:1},
+  {s:"Internet Technologies", q:"Data sent over the internet is broken into small pieces called ___.", opts:["Bytes","Packets","Nodes","Pixels"], ans:1},
+  {s:"Internet Technologies", q:"The address of a webpage is called a ___.", opts:["IP address","DNS","URL","HTTP"], ans:2},
+  {s:"Internet Technologies", q:"Which internet service allows you to make voice calls over the internet?", opts:["FTP","VoIP","SMTP","HTTP"], ans:1},
+
+  // EMAIL & ONLINE COMMUNICATION
+  {s:"Email & Online Comms", q:"What does CC mean in an email?", opts:["Closed Copy","Carbon Copy","Confirmed Copy","Copied Contact"], ans:1},
+  {s:"Email & Online Comms", q:"In an email, BCC recipients ___.", opts:["Can see all other recipients' addresses","Receive the email first","Cannot see each other's addresses","Are the main recipients"], ans:2},
+  {s:"Email & Online Comms", q:"Which of the following is a rule of email etiquette?", opts:["Type your message in ALL CAPITALS","Use a clear and relevant subject line","Reply to emails after one week","Forward all emails to your contacts"], ans:1},
+  {s:"Email & Online Comms", q:"Which part of an email contains the main message?", opts:["Subject","Signature","Body","Attachment"], ans:2},
+  {s:"Email & Online Comms", q:"WhatsApp and Telegram are examples of ___.", opts:["Search engines","Web browsers","Instant messaging apps","Email providers"], ans:2},
+  {s:"Email & Online Comms", q:"Which platform is commonly used for video conferencing?", opts:["Instagram","TikTok","Zoom","WhatsApp Status"], ans:2},
+  {s:"Email & Online Comms", q:"Which of the following is a disadvantage of email?", opts:["Messages arrive instantly","No postage fee required","Spam and phishing are security risks","Creates a written record"], ans:2},
+
+  // DIGITAL STORAGE & CLOUD
+  {s:"Storage & Cloud", q:"RAM is an example of ___ storage.", opts:["Secondary","Permanent","Primary","Cloud"], ans:2},
+  {s:"Storage & Cloud", q:"Which storage device uses flash memory and has no moving parts?", opts:["HDD","DVD","SSD","Magnetic Tape"], ans:2},
+  {s:"Storage & Cloud", q:"1 Gigabyte is equal to ___.", opts:["1,024 bytes","1,024 KB","1,024 MB","1,024 TB"], ans:2},
+  {s:"Storage & Cloud", q:"Cloud computing is best described as ___.", opts:["Storing data on a USB drive","Delivering computing services over the internet","Connecting computers in a LAN","Installing software on a hard drive"], ans:1},
+  {s:"Storage & Cloud", q:"Which of the following is an example of a SaaS cloud service?", opts:["Amazon AWS","Google App Engine","Google Docs","Microsoft Azure"], ans:2},
+  {s:"Storage & Cloud", q:"The 3-2-1 backup rule means ___.", opts:["Back up 3 times per day on 2 devices","Keep 3 copies, on 2 media types, with 1 copy offsite","Use 3 cloud services, 2 USBs, and 1 HDD","Delete backup after 3 months"], ans:1},
+  {s:"Storage & Cloud", q:"Which is an advantage of cloud computing?", opts:["Requires no internet connection","Data is stored only on your device","Easy collaboration on shared files","Higher hardware purchase cost"], ans:2},
+  {s:"Storage & Cloud", q:"ROM stores ___.", opts:["Temporary data while the computer is running","Permanent start-up instructions","User documents and photos","Internet browser history"], ans:1},
+
+  // CYBERSECURITY I
+  {s:"Cybersecurity I", q:"Malware is best defined as ___.", opts:["A type of web browser","Malicious software designed to damage or gain unauthorised access to a computer","Software used to protect computers","A type of network protocol"], ans:1},
+  {s:"Cybersecurity I", q:"A virus differs from a worm because a virus ___.", opts:["Spreads across networks on its own","Demands a ransom from the victim","Attaches to files and spreads when files are shared","Secretly records user activity"], ans:2},
+  {s:"Cybersecurity I", q:"Ransomware attacks a computer by ___.", opts:["Displaying pop-up advertisements","Recording keystrokes silently","Encrypting files and demanding payment","Spreading through network cables"], ans:2},
+  {s:"Cybersecurity I", q:"Phishing is best described as ___.", opts:["A type of network topology","A deceptive attempt to trick users into revealing personal information","Software that removes malware","A method of encrypting data"], ans:1},
+  {s:"Cybersecurity I", q:"An ethical hacker is also known as a ___.", opts:["Black hat hacker","Grey hat hacker","White hat hacker","Script kiddie"], ans:2},
+  {s:"Cybersecurity I", q:"Which is a sign that a computer may be infected with malware?", opts:["The computer runs faster than usual","New software installs correctly","The browser homepage changes without permission","The screen becomes brighter"], ans:2},
+  {s:"Cybersecurity I", q:"A DDoS attack works by ___.", opts:["Stealing user passwords","Flooding a server with traffic to make it unavailable","Encrypting files on a hard drive","Reading emails without permission"], ans:1},
+
+  // CYBERSECURITY II
+  {s:"Cybersecurity II", q:"Which is NOT a characteristic of a strong password?", opts:["At least 12 characters long","Contains your date of birth","Mix of letters, numbers, and symbols","Unique for each account"], ans:1},
+  {s:"Cybersecurity II", q:"Two-Factor Authentication (2FA) improves security because ___.", opts:["It replaces the need for a password","It adds a second verification step even if the password is stolen","It encrypts all your files automatically","It blocks all incoming emails"], ans:1},
+  {s:"Cybersecurity II", q:"HTTPS in a web address means ___.", opts:["The website is not secure","Data is transferred using encryption","The website is offline","The page uses flash storage"], ans:1},
+  {s:"Cybersecurity II", q:"End-to-end encryption means ___.", opts:["Only the internet provider can read your messages","Messages are stored on the cloud unencrypted","Only the sender and receiver can read the messages","Messages are deleted after 24 hours"], ans:2},
+  {s:"Cybersecurity II", q:"A VPN is used to ___.", opts:["Speed up internet connection","Store data in the cloud","Encrypt internet traffic and protect privacy","Detect and remove malware"], ans:2},
+
+  // DATA PRIVACY, ETHICS & SOCIAL MEDIA
+  {s:"Privacy, Ethics & Social Media", q:"A digital footprint is ___.", opts:["A type of computer virus","The trail of data left behind when you use the internet","A network security method","A cloud storage service"], ans:1},
+  {s:"Privacy, Ethics & Social Media", q:"The NDPR was issued by which Nigerian agency?", opts:["CBN","NITDA","NCC","EFCC"], ans:1},
+  {s:"Privacy, Ethics & Social Media", q:"Cyberbullying includes ___.", opts:["Sharing educational videos online","Posting embarrassing photos of someone without consent","Using a strong password","Enabling two-factor authentication"], ans:1},
+  {s:"Privacy, Ethics & Social Media", q:"Which social media platform is primarily for professional networking and job searching?", opts:["TikTok","Snapchat","LinkedIn","Instagram"], ans:2},
+  {s:"Privacy, Ethics & Social Media", q:"Responsible digital citizenship on social media means ___.", opts:["Sharing all personal information publicly","Forwarding every message you receive","Thinking before you post and verifying information before sharing","Using the same password on all accounts"], ans:2},
+];
+
+const TOTAL_TIME = 45 * 60; // 45 minutes in seconds
+const LETTERS = ['A','B','C','D'];
+
+let studentName = '';
+let studentClass = '';
+let userAnswers = new Array(50).fill(null);
+let timerInterval = null;
+let secondsLeft = TOTAL_TIME;
+let examStarted = false;
+
+// ── SECTIONS ───────────────────────────────────────────────────────────────
+const SECTIONS = [
+  {label:"SECTION A  –  Computer Networks",         start:0,  end:9  },
+  {label:"SECTION B  –  Internet Technologies",     start:10, end:17 },
+  {label:"SECTION C  –  Email & Online Communication", start:18, end:24},
+  {label:"SECTION D  –  Digital Storage & Cloud",   start:25, end:32 },
+  {label:"SECTION E  –  Cybersecurity I: Threats",  start:33, end:39 },
+  {label:"SECTION F  –  Cybersecurity II: Protection", start:40, end:44},
+  {label:"SECTION G  –  Data Privacy, Ethics & Social Media", start:45, end:49},
+];
+
+// ── START ──────────────────────────────────────────────────────────────────
+function startExam() {
+  studentName  = document.getElementById('studentName').value.trim();
+  studentClass = document.getElementById('studentClass').value;
+  if (!studentName) { alert('Please enter your full name.'); return; }
+  if (!studentClass){ alert('Please select your class.'); return; }
+
+  userAnswers = new Array(50).fill(null);
+  secondsLeft = TOTAL_TIME;
+
+  document.getElementById('headerName').textContent = studentName;
+  buildExam();
+  showScreen('examScreen');
+  startTimer();
+}
+
+// ── BUILD EXAM HTML ────────────────────────────────────────────────────────
+function buildExam() {
+  const body = document.getElementById('examBody');
+  body.innerHTML = '';
+
+  let sIdx = 0;
+  QUESTIONS.forEach((q, i) => {
+    // Section header
+    if (sIdx < SECTIONS.length && i === SECTIONS[sIdx].start) {
+      const sec = document.createElement('div');
+      sec.className = 'section-label';
+      sec.textContent = SECTIONS[sIdx].label;
+      body.appendChild(sec);
+      sIdx++;
+    }
+
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = `qcard-${i}`;
+
+    const qNum = document.createElement('div');
+    qNum.className = 'q-num';
+    qNum.textContent = `Question ${i+1} of 50`;
+
+    const qText = document.createElement('div');
+    qText.className = 'q-text';
+    qText.textContent = `${i+1}.  ${q.q}`;
+
+    const opts = document.createElement('div');
+    opts.className = 'options';
+
+    q.opts.forEach((opt, oi) => {
+      const lbl = document.createElement('label');
+      lbl.className = 'option-label';
+      lbl.id = `opt-${i}-${oi}`;
+
+      const inp = document.createElement('input');
+      inp.type = 'radio';
+      inp.name = `q${i}`;
+      inp.value = oi;
+      inp.addEventListener('change', () => selectAnswer(i, oi));
+
+      const letter = document.createElement('div');
+      letter.className = 'opt-letter';
+      letter.textContent = LETTERS[oi];
+
+      const txt = document.createElement('span');
+      txt.textContent = opt;
+
+      lbl.appendChild(inp);
+      lbl.appendChild(letter);
+      lbl.appendChild(txt);
+      opts.appendChild(lbl);
+    });
+
+    card.appendChild(qNum);
+    card.appendChild(qText);
+    card.appendChild(opts);
+    body.appendChild(card);
+  });
+}
+
+// ── SELECT ANSWER ──────────────────────────────────────────────────────────
+function selectAnswer(qIdx, optIdx) {
+  userAnswers[qIdx] = optIdx;
+
+  // Update option styles
+  for (let oi = 0; oi < 4; oi++) {
+    const lbl = document.getElementById(`opt-${qIdx}-${oi}`);
+    if (lbl) lbl.classList.toggle('selected', oi === optIdx);
+  }
+
+  // Mark card answered
+  const card = document.getElementById(`qcard-${qIdx}`);
+  if (card) card.classList.add('answered');
+
+  updateProgress();
+}
+
+// ── PROGRESS ───────────────────────────────────────────────────────────────
+function updateProgress() {
+  const done = userAnswers.filter(a => a !== null).length;
+  document.getElementById('answeredCount').textContent = done;
+  document.getElementById('progressLabel').textContent = `${done} / 50`;
+  document.getElementById('progressFill').style.width = `${(done/50)*100}%`;
+}
+
+// ── TIMER ──────────────────────────────────────────────────────────────────
+function startTimer() {
+  timerInterval = setInterval(() => {
+    secondsLeft--;
+    const m = Math.floor(secondsLeft / 60);
+    const s = secondsLeft % 60;
+    const box = document.getElementById('timerBox');
+    box.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+
+    box.classList.remove('warning','danger');
+    if (secondsLeft <= 60)       box.classList.add('danger');
+    else if (secondsLeft <= 300) box.classList.add('warning');
+
+    if (secondsLeft <= 0) {
+      clearInterval(timerInterval);
+      submitExam(true);
+    }
+  }, 1000);
+}
+
+// ── CONFIRM SUBMIT ─────────────────────────────────────────────────────────
+function confirmSubmit() {
+  const done = userAnswers.filter(a => a !== null).length;
+  const unanswered = 50 - done;
+  if (unanswered > 0) {
+    if (!confirm(`You have ${unanswered} unanswered question(s).\n\nAre you sure you want to submit?`)) return;
+  }
+  clearInterval(timerInterval);
+  submitExam(false);
+}
+
+// ── SUBMIT & SCORE ─────────────────────────────────────────────────────────
+function submitExam(timeUp) {
+  clearInterval(timerInterval);
+
+  let correct = 0;
+  const sectionScores = SECTIONS.map(sec => ({ label: sec.label.replace(/SECTION . – /,''), correct:0, total: sec.end - sec.start + 1 }));
+
+  QUESTIONS.forEach((q, i) => {
+    if (userAnswers[i] === q.ans) {
+      correct++;
+      // find which section
+      for (let si = 0; si < SECTIONS.length; si++) {
+        if (i >= SECTIONS[si].start && i <= SECTIONS[si].end) { sectionScores[si].correct++; break; }
+      }
+    }
+  });
+
+  const wrong = 50 - correct;
+  const rawScore = correct * 2;
+  const pct   = Math.round((correct / 50) * 100);
+
+  // Grade
+  let grade, emoji, gradeColor;
+  if (pct >= 75) { grade='A – Distinction'; emoji='🏆'; gradeColor='#1a7a4a'; }
+  else if (pct >= 65) { grade='B – Credit'; emoji='🎉'; gradeColor='#2e86ab'; }
+  else if (pct >= 50) { grade='C – Pass'; emoji='👍'; gradeColor='#e6a817'; }
+  else if (pct >= 40) { grade='D – Pass'; emoji='📚'; gradeColor='#e67e22'; }
+  else { grade='F – Fail'; emoji='📖'; gradeColor='#c0392b'; }
+
+  // Populate result
+  document.getElementById('resultEmoji').textContent = emoji;
+  document.getElementById('resultName').textContent  = `${studentName}  ·  ${studentClass}`;
+  document.getElementById('scoreNum').textContent    = rawScore;
+  document.getElementById('statCorrect').textContent = correct;
+  document.getElementById('statWrong').textContent   = wrong;
+  document.getElementById('statPct').textContent     = pct + '%';
+
+  const badge = document.getElementById('gradeBadge');
+  badge.textContent = grade;
+  badge.style.background = 'rgba(255,255,255,0.2)';
+  badge.style.color = '#fff';
+
+  // Section bars
+  const barsDiv = document.getElementById('sectionBars');
+  barsDiv.innerHTML = '<div style="font-size:13px;font-weight:800;color:var(--green);margin-bottom:10px;">Performance by Section</div>';
+  sectionScores.forEach(sec => {
+    const sp = Math.round((sec.correct / sec.total) * 100);
+    const color = sp >= 60 ? 'var(--green2)' : sp >= 40 ? 'var(--gold)' : 'var(--red)';
+    barsDiv.innerHTML += `
+      <div class="perf-bar">
+        <div class="perf-bar-label"><span>${sec.label}</span><span>${sec.correct}/${sec.total}</span></div>
+        <div class="perf-bar-bg"><div class="perf-bar-fill" style="width:${sp}%;background:${color}"></div></div>
+      </div>`;
+  });
+
+  // Wrong answers review
+  const reviewDiv = document.getElementById('reviewList');
+  reviewDiv.innerHTML = '';
+  let wrongCount = 0;
+  QUESTIONS.forEach((q, i) => {
+    if (userAnswers[i] !== q.ans) {
+      wrongCount++;
+      const yourAns = userAnswers[i] !== null ? `${LETTERS[userAnswers[i]]}. ${q.opts[userAnswers[i]]}` : 'Not answered';
+      reviewDiv.innerHTML += `
+        <div class="review-item wrong">
+          <div class="ri-q">Q${i+1}. ${q.q}</div>
+          <div class="ri-a ri-your">✗ Your answer: ${yourAns}</div>
+          <div class="ri-a ri-right">✓ Correct answer: ${LETTERS[q.ans]}. ${q.opts[q.ans]}</div>
+        </div>`;
+    }
+  });
+  if (wrongCount === 0) reviewDiv.innerHTML = '<div style="color:var(--green);font-weight:700;font-size:14px;">🎉 Perfect score! All answers correct.</div>';
+
+  showScreen('resultScreen');
+
+  // ── SEND TO GOOGLE SHEETS ──────────────────────────────────────────────
+  sendToGoogleSheets({
+    name: studentName,
+    className: studentClass,
+    score: rawScore,
+    correct: correct,
+    wrong: wrong,
+    percentage: pct + '%',
+    grade: grade,
+    timeUp: timeUp ? 'Yes' : 'No',
+    timestamp: new Date().toLocaleString('en-NG', {timeZone:'Africa/Lagos'}),
+    sections: sectionScores.map(s => `${s.label.split(' ')[0]}: ${s.correct}/${s.total}`).join(' | ')
+  });
+}
+
+// ── GOOGLE SHEETS SUBMISSION ───────────────────────────────────────────────
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycby5tsRiMTnlWV0YTt-TI5FmA_wN75mWQvwVo9FMH2oWwnhCHByQWBkb9gKt5E0z4aVu/exec';
+
+function sendToGoogleSheets(data) {
+  if (!SHEET_URL || SHEET_URL === 'PASTE_YOUR_GOOGLE_SCRIPT_URL_HERE') return;
+  fetch(SHEET_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  }).catch(() => {}); // silent fail — student experience unaffected
+}
+
+// ── RETRY ──────────────────────────────────────────────────────────────────
+function retryExam() {
+  clearInterval(timerInterval);
+  showScreen('startScreen');
+}
+
+// ── SCREEN SWITCH ──────────────────────────────────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
